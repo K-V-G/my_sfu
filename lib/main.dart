@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_sfu/initialView.dart';
+import 'package:my_sfu/privatInfoView.dart';
 import 'package:my_sfu/profileView.dart';
 
 import 'zachetkaView.dart';
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      home: profieView(),
+      home: profieViewSudents(),
     );
   }
 }

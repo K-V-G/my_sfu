@@ -23,7 +23,7 @@ class _prikazyViewPage extends State<prikazyView> {
                 child: Padding(
                   padding: EdgeInsets.only(top: 0.0),
                   child: Align(
-                    alignment: Alignment.topCenter,
+                    alignment: Alignment.center,
                     child: Text(
                       "Приказы",
                       style: TextStyle(

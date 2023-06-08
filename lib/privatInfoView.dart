@@ -30,7 +30,7 @@ class _profileViewStatePage extends State<profieViewSudents> {
                             child: Align(alignment: Alignment.topCenter,
                                  child: SvgPicture.asset("assets/image/strelka_nazad.svg"))))),
                     const Expanded(flex: 80, child:  Align(
-                        alignment: Alignment.topCenter,
+                        alignment: Alignment.center,
                         child: Text(
                           "Личная информация",
                           style: TextStyle(

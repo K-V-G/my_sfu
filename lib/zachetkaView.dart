@@ -29,7 +29,7 @@ class _zachetkaViewPage extends State<zachetkaView> {
                 child: Padding(
                   padding: EdgeInsets.only(top: 0.0),
                   child: Align(
-                    alignment: Alignment.topCenter,
+                    alignment: Alignment.center,
                     child: Text(
                       "Зачетная книжка",
                       style: TextStyle(

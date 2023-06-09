@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:my_sfu/privatInfoView.dart';
 import 'package:my_sfu/windowView.dart';
 
-import 'zachetkaView.dart';
 
 void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);

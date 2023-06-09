@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import 'button/ButtonCource.dart';
 import 'button/ButtonSemestr.dart';
+import 'cells/CellsOcenky.dart';
 
 class ocenkyView extends StatefulWidget {
   @override
@@ -142,7 +142,29 @@ class _ocenkyViewPage extends State<ocenkyView> {
                 ],
               )),
 
-              Expanded(flex: 5, child: Text("")),
+              Expanded(
+                  flex: 5,
+                  child:Row(
+                    children: [
+                      Expanded(flex: 100, child: ListView(
+                        scrollDirection: Axis.vertical,
+                        children: [
+                          CellsOcenky(
+                            title: 'Курс: 2021 весна, Философия, ИКИТ',
+                          ),
+                          CellsOcenky(
+                            title: 'Курс: Алгоритмы и структуры данных (адаптивный)',
+                          ),
+                          CellsOcenky(
+                            title: 'Курс: Алгоритмы и структуры данных (адаптивный)',
+                          ),
+                          CellsOcenky(
+                            title: 'Курс: Алгоритмы и структуры данных (адаптивный)',
+                          ),
+                        ],
+                      )),
+                    ],
+                  )),
             ],
           ),
         ],

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'cells/CellsPricazy.dart';
+
 class prikazyView extends StatefulWidget {
   @override
   _prikazyViewPage createState() => _prikazyViewPage();
@@ -36,7 +38,37 @@ class _prikazyViewPage extends State<prikazyView> {
                   ),
                 ),
               ),
-              Expanded(flex: 7, child: Text("")),
+              Expanded(
+                  flex: 7,
+                  child:Row(
+                    children: [
+                      Expanded(flex: 100, child: ListView(
+                        scrollDirection: Axis.vertical,
+                        children: [
+                          CellsPricazy(
+                            nomer: '№6128/с от 2023-04-17',
+                            title: '4.7.3 Весна 1 ПА_Об установлении сроков повторной ПА',
+                            data: 'по 2023-06-08',
+                          ),
+                          CellsPricazy(
+                            nomer: '№6128/с от 2023-04-17',
+                            title: '4.7.3 Весна 1 ПА_Об установлении сроков повторной ПА',
+                            data: 'по 2023-06-08',
+                          ),
+                          CellsPricazy(
+                            nomer: '№6128/с от 2023-04-17',
+                            title: '4.7.3 Весна 1 ПА_Об установлении сроков повторной ПА',
+                            data: 'по 2023-06-08',
+                          ),
+                          CellsPricazy(
+                            nomer: '№6128/с от 2023-04-17',
+                            title: '4.7.3 Весна 1 ПА_Об установлении сроков повторной ПА',
+                            data: 'по 2023-06-08',
+                          )
+                        ],
+                      )),
+                    ],
+                  )),
             ],
           ),
         ],

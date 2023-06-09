@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'button/ButtonCource.dart';
 import 'button/ButtonSemestr.dart';
+import 'cells/CellsStudentPlan.dart';
 
 class studentsPlanView extends StatefulWidget {
   @override
@@ -31,7 +32,7 @@ class _studentsPlanView extends State<studentsPlanView> {
                   child: Align(
                     alignment: Alignment.center,
                     child: Text(
-                      "Студенческий план",
+                      "Учебный план",
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 22.0,
@@ -146,7 +147,44 @@ class _studentsPlanView extends State<studentsPlanView> {
                 ],
               )),
 
-              Expanded(flex: 5, child: Text("")),
+              Expanded(
+                  flex: 5,
+                  child:Row(
+                    children: [
+                      Expanded(flex: 100, child: ListView(
+                        scrollDirection: Axis.vertical,
+                        children: [
+                          CellsSudentPlan(
+                            type: 'Обязательная',
+                            title: 'Б1.В Инженерия требований к программному обеспечению',
+                            cafedra: 'Кафедра Информатики',
+                            typeExam: 'Зачет',
+                            timeLecture: 'Лекции: 18 ч.',
+                            timePrac: 'Практические занятия: 54 ч.',
+                            timeSam: 'Самостоятельная работа: 72 ч.',
+                          ),
+                          CellsSudentPlan(
+                            type: 'Обязательная',
+                            title: 'Б1.В Инженерия требований к программному обеспечению',
+                            cafedra: 'Кафедра Информатики',
+                            typeExam: 'Зачет',
+                            timeLecture: 'Лекции: 18 ч.',
+                            timePrac: 'Практические занятия: 54 ч.',
+                            timeSam: 'Самостоятельная работа: 72 ч.',
+                          ),
+                          CellsSudentPlan(
+                            type: 'Обязательная',
+                            title: 'Б1.В Инженерия требований к программному обеспечению',
+                            cafedra: 'Кафедра Информатики',
+                            typeExam: 'Зачет',
+                            timeLecture: 'Лекции: 18 ч.',
+                            timePrac: 'Практические занятия: 54 ч.',
+                            timeSam: 'Самостоятельная работа: 72 ч.',
+                          ),
+                        ],
+                      )),
+                    ],
+                  )),
             ],
           ),
         ],

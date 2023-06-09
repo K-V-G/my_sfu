@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:my_sfu/cells/CellsZachetka.dart';
 
 import 'button/ButtonCource.dart';
 import 'button/ButtonSemestr.dart';
@@ -142,8 +143,38 @@ class _zachetkaViewPage extends State<zachetkaView> {
                 ],
               )),
 
-              Expanded(flex: 5, child: Text("")),
-            ],
+              Expanded(
+                  flex: 5,
+                  child:Row(
+                  children: [
+                      Expanded(flex: 100, child: ListView(
+                            scrollDirection: Axis.vertical,
+                            children: [
+                        CellsZachetkaView(
+                        title: 'Теория и практика эффективного речевого общения И дааааа',
+                        type: 'Зачёт',
+                        ocenka: 'Не зачёт',
+                        ),
+                        CellsZachetkaView(
+                        title: 'Теория и практика эффективного речевого общения',
+                        type: 'Экзамен',
+                        ocenka: 'Удовлетворительно',
+                        ),
+                              CellsZachetkaView(
+                                title: 'Теория и практика эффективного речевого общения',
+                                type: 'Экзамен',
+                                ocenka: 'Хорошо',
+                              ),
+                              CellsZachetkaView(
+                                title: 'Теория и практика эффективного речевого общения',
+                                type: 'Экзамен',
+                                ocenka: 'Отлично',
+                              )
+                        ],
+                        )),
+                    ],
+                      )),
+                              ],
           ),
         ],
       ),

@@ -25,7 +25,7 @@ class _profileViewStatePage extends State<profieViewSudents> {
                     Expanded(flex: 10, child: Padding(
                         padding: EdgeInsets.only(top: 8.0, left: 10.0) ,
                         child: InkWell(onTap: () {
-                          Navigator.pushNamed(context, '/window');
+                          Navigator.pop(context);
                         },
                             child: Align(alignment: Alignment.topCenter,
                                  child: SvgPicture.asset("assets/image/strelka_nazad.svg"))))),

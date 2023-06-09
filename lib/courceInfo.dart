@@ -25,23 +25,22 @@ class _courceOcenkyInfoState extends State<courceOcenkyInfo> {
             children: [
               Expanded(flex: 1, child: Text("")),
               Expanded(
-                  flex: 2,
                   child: Row(
                     children: [
-                      Expanded(flex: 10, child: Padding(
+                      Expanded(flex: 20, child: Padding(
                           padding: EdgeInsets.only(top: 8.0, left: 10.0) ,
                           child: InkWell(onTap: () {
                             Navigator.pop(context);
                           },
-                              child: Align(alignment: Alignment.center,
+                              child: Align(alignment: Alignment.topCenter,
                                   child: SvgPicture.asset("assets/image/strelka_nazad.svg"))))),
                       Expanded(flex: 80, child:  Align(
-                        alignment: Alignment.center,
+                        alignment: Alignment.topCenter,
                         child: Text(
                           widget.title,
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 22.0,
+                            fontSize: 20.0,
                             fontFamily: 'Ubuntu',
                             fontWeight: FontWeight.w600,
                           ),

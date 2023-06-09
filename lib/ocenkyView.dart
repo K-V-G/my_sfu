@@ -5,6 +5,7 @@ import 'button/ButtonSemestr.dart';
 import 'cells/CellsOcenky.dart';
 
 class ocenkyView extends StatefulWidget {
+
   @override
   _ocenkyViewPage createState() => _ocenkyViewPage();
 }

@@ -143,12 +143,13 @@ class _ocenkyCourceInfoState extends State<ocenkyCourceInfo> {
     double coef = tecZnach / maxZnach;
 
     if (coef >= 0.8) {
-        if (id == 1) {
-          return Color(0xffEDF7ED);
-        }
-        else if (id == 2) {
-          return Color(0xff54B754);
-        }
+      if (id == 1) {
+        return Color(0xffEDF7ED);
+      }
+      else if (id == 2) {
+        return Color(0xff54B754);
+      }
+    }
       else if (coef >= 0.6 && coef < 0.8) {
         if (id == 1) {
           return Color(0xffCBCDFF);
@@ -165,8 +166,7 @@ class _ocenkyCourceInfoState extends State<ocenkyCourceInfo> {
           return Color(0xffEB00FF);
         }
       }
-    }
-    else {
+      else {
       if (id == 1) {
         return Color(0xffFAEBEB);
       }

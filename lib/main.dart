@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:my_sfu/privatInfoView.dart';
 import 'package:my_sfu/windowView.dart';
 
+import 'initialView.dart';
+
 
 void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -21,7 +23,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      home: windowView(),
+      home: initialView(),
       routes: <String, WidgetBuilder> {
         '/privateInfo': (BuildContext context) => profieViewSudents()
       },

@@ -4,14 +4,13 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:oauth2/oauth2.dart' as oauth2;
 
+import 'AuthorizationScreen.dart';
+
 class initialView extends StatefulWidget {
   @override
   _initialViewState createState() => _initialViewState();
 }
 class _initialViewState extends State<initialView> {
-  final authorizationEndpoint = Uri.parse('https://api.sfu-kras.ru/login');
-  final redirectURL = Uri.parse('https://api.sfu-kras.ru');
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +86,7 @@ class _initialViewState extends State<initialView> {
                              flex: 4,
                              child: ElevatedButton(
                                onPressed: () {
-
+                                 fetchToken();
                                },
                                style: ElevatedButton.styleFrom(
                                  primary: const Color(0xffEF5126), // Оранжевый цвет кнопки
@@ -132,6 +131,27 @@ class _initialViewState extends State<initialView> {
         ],
       ),
     );
+  }
+
+  Future<String> fetchToken() async {
+    var authorizationEndpoint = Uri.parse('https://api.sfu-kras.ru/oauth/authorize');
+    var tokenEndpoint = Uri.parse('https://api.sfu-kras.ru/oauth/token');
+    var clientId = '11';
+    var rediectUri = Uri.parse('mobile-app://callback');
+    var codeChallenge = 'abcdefABGDTRDGHVHVVHVHVHGVDGGDVFV4584vvrjnghrf'; // ИЗМЕНИТЬ НА ГЕНЕРАЦИЮ
+    var codeChallengeMethod = 'S256';
+
+    var grant = oauth2.AuthorizationCodeGrant(
+        clientId,
+        authorizationEndpoint,
+        tokenEndpoint);
+
+    var authorizationUrl = '$authorizationEndpoint?response_type=code&client_id=$clientId&redirect_uri=$rediectUri&code_challenge=$codeChallenge&code_challenge_method=$codeChallengeMethod';
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) => AuthorizationScreen(authorizationUrl: authorizationUrl,)
+    ));
+
+    return 'OK';
   }
 }
 

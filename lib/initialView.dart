@@ -1,7 +1,9 @@
+import 'dart:convert';
+import 'dart:math';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:http/http.dart' as http;
 import 'package:oauth2/oauth2.dart' as oauth2;
 
 import 'AuthorizationScreen.dart';
@@ -86,7 +88,7 @@ class _initialViewState extends State<initialView> {
                              flex: 4,
                              child: ElevatedButton(
                                onPressed: () {
-                                 fetchToken();
+                                 fetchToken(context);
                                },
                                style: ElevatedButton.styleFrom(
                                  primary: const Color(0xffEF5126), // Оранжевый цвет кнопки
@@ -133,12 +135,13 @@ class _initialViewState extends State<initialView> {
     );
   }
 
-  Future<String> fetchToken() async {
+  Future<String> fetchToken(BuildContext context) async {
     var authorizationEndpoint = Uri.parse('https://api.sfu-kras.ru/oauth/authorize');
     var tokenEndpoint = Uri.parse('https://api.sfu-kras.ru/oauth/token');
     var clientId = '11';
     var rediectUri = Uri.parse('mobile-app://callback');
-    var codeChallenge = 'abcdefABGDTRDGHVHVVHVHVHGVDGGDVFV4584vvrjnghrf'; // ИЗМЕНИТЬ НА ГЕНЕРАЦИЮ
+    var codeVerifier = await generateCodeVerifier();
+    var codeChallenge = await generateCodeChallenge(codeVerifier);
     var codeChallengeMethod = 'S256';
 
     var grant = oauth2.AuthorizationCodeGrant(
@@ -147,11 +150,42 @@ class _initialViewState extends State<initialView> {
         tokenEndpoint);
 
     var authorizationUrl = '$authorizationEndpoint?response_type=code&client_id=$clientId&redirect_uri=$rediectUri&code_challenge=$codeChallenge&code_challenge_method=$codeChallengeMethod';
-    Navigator.push(context, MaterialPageRoute(
-      builder: (context) => AuthorizationScreen(authorizationUrl: authorizationUrl,)
-    ));
+    await navigateToAuthorizationScreen(context, authorizationUrl, codeVerifier);
 
     return 'OK';
+  }
+
+  Future<String> generateCodeVerifier() async {
+    final random = Random();
+    final length = 43 + random.nextInt(86);
+    final allowedCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-~_';
+    final StringBuffer buffer = StringBuffer();
+
+    for (var i = 0; i < length; i++) {
+      final randomIndex = random.nextInt(allowedCharacters.length);
+      buffer.write(allowedCharacters[randomIndex]);
+    }
+
+    return buffer.toString();
+  }
+
+  Future<void> navigateToAuthorizationScreen(BuildContext context,
+      String authorizationUrl, String codeVerifier) {
+    return Navigator.push(context, MaterialPageRoute(
+        builder: (context) => AuthorizationScreen(
+          authorizationUrl: authorizationUrl,
+        codeVerifier: codeVerifier,)
+    ));
+  }
+
+  Future<String> generateCodeChallenge(String codeVerifier) async {
+    var bytes = utf8.encode(codeVerifier);
+    var digest = sha256.convert(bytes);
+    var base64Url = base64UrlEncode(digest.bytes);
+    return base64Url
+        .replaceAll('+', '-')
+        .replaceAll('/', '_')
+        .replaceAll('=', '');
   }
 }
 

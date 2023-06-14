@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 
 class profieViewSudents extends StatefulWidget {
   @override
@@ -7,10 +12,37 @@ class profieViewSudents extends StatefulWidget {
 }
 
 class _profileViewStatePage extends State<profieViewSudents> {
+  Future<Map<String, dynamic>>? dataFuture;
+  String? fio;
+  String? group;
+  String? uni;
+  String? status;
+  String? rang;
+  String? email;
+
+  @override
+  void initState() {
+    super.initState();
+    dataFuture = getStudentsInfo();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body: FutureBuilder<void>(
+        future: dataFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Ошибка: ${snapshot.error}'),
+            );
+          } else {
+            return Stack(
         children: [
           Container(
             color: const Color(0xffFFFFFF),
@@ -72,10 +104,10 @@ class _profileViewStatePage extends State<profieViewSudents> {
                                           children: [
                                             Expanded(flex: 10,
                                                 child: SvgPicture.asset('assets/image/profile_icons.svg')),
-                                            const Expanded(flex: 90,
+                                            Expanded(flex: 90,
                                                 child: Padding(padding: EdgeInsets.only(left: 10.0)
                                                   , child: Text(
-                                                    'Говорин Кирилл Игы-Ондорлы Васильевич Сан',
+                                                    fio ?? '',
                                                     style: TextStyle(
                                                       color: Colors.black,
                                                       fontSize: 15.0,
@@ -91,10 +123,10 @@ class _profileViewStatePage extends State<profieViewSudents> {
                                             Expanded(flex: 10,
                                                 child: SvgPicture.asset('assets/image/group.svg',
                                                   color: Colors.black,)),
-                                            const Expanded(flex: 90,
+                                            Expanded(flex: 90,
                                                 child: Padding(padding: EdgeInsets.only(left: 10.0)
                                                   , child: Text(
-                                                    'КИ19-16.255433аауу',
+                                                    group ?? '',
                                                     style: TextStyle(
                                                       color: Colors.black,
                                                       fontSize: 15.0,
@@ -110,10 +142,10 @@ class _profileViewStatePage extends State<profieViewSudents> {
                                             Expanded(flex: 10,
                                                 child: SvgPicture.asset('assets/image/institut_icons.svg',
                                                   color: Colors.black,)),
-                                            const Expanded(flex: 90,
+                                            Expanded(flex: 90,
                                                 child: Padding(padding: EdgeInsets.only(left: 10.0)
                                                   , child: Text(
-                                                    'ИКИТ',
+                                                    uni ?? '',
                                                     style: TextStyle(
                                                       color: Colors.black,
                                                       fontSize: 15.0,
@@ -148,10 +180,10 @@ class _profileViewStatePage extends State<profieViewSudents> {
                                         children: [
                                           Expanded(flex: 10,
                                               child: SvgPicture.asset('assets/image/rang_icons.svg')),
-                                          const Expanded(flex: 90,
+                                          Expanded(flex: 90,
                                               child: Padding(padding: EdgeInsets.only(left: 10.0)
                                                 , child: Text(
-                                                  'Студент',
+                                                  status ?? '',
                                                   style: TextStyle(
                                                     color: Colors.black,
                                                     fontSize: 15.0,
@@ -167,10 +199,10 @@ class _profileViewStatePage extends State<profieViewSudents> {
                                           Expanded(flex: 10,
                                               child: SvgPicture.asset('assets/image/dolgnost_icons.svg',
                                                 color: Colors.black,)),
-                                          const Expanded(flex: 90,
+                                          Expanded(flex: 90,
                                               child: Padding(padding: EdgeInsets.only(left: 10.0)
                                                 , child: Text(
-                                                  'Учащийся',
+                                                  rang ?? '',
                                                   style: TextStyle(
                                                     color: Colors.black,
                                                     fontSize: 15.0,
@@ -186,10 +218,10 @@ class _profileViewStatePage extends State<profieViewSudents> {
                                           Expanded(flex: 10,
                                               child: SvgPicture.asset('assets/image/email_icon.svg',
                                                 color: Colors.black,)),
-                                          const Expanded(flex: 90,
+                                          Expanded(flex: 90,
                                               child: Padding(padding: EdgeInsets.only(left: 10.0)
                                                 , child: Text(
-                                                  'goworin.k@yandex.ru',
+                                                  email ?? '',
                                                   style: TextStyle(
                                                     color: Colors.black,
                                                     fontSize: 15.0,
@@ -213,7 +245,73 @@ class _profileViewStatePage extends State<profieViewSudents> {
             ],
           ),
         ],
+            );
+          }
+        },
       ),
     );
+  }
+
+  Future<Map<String, dynamic>> getStudentsInfo() async {
+    final storage = FlutterSecureStorage();
+    String? accessToken = await storage.read(key: 'access_token');
+    String? refreshToken = await storage.read(key: 'refresh_token');
+
+    var url_group = Uri.parse('https://api.sfu-kras.ru/api/v1/student/timetable/suitable-groups');
+    var url_name = Uri.parse('https://api.sfu-kras.ru/api/v1/user');
+    var url_student = Uri.parse('https://api.sfu-kras.ru/api/v1/student');
+    var headers = {'Authorization': 'Bearer $accessToken'};
+
+    final Map<String, dynamic> responseData = {};
+
+    if (accessToken != null) {
+      var response = await http.get(url_name, headers: headers);
+      if (response.statusCode == 200) {
+        var jsonResponce = jsonDecode(response.body);
+        var data = jsonResponce['data'];
+        var attributes = data['attributes'];
+        var lastName = attributes['lastName'];
+        var firstName = attributes['firstName'];
+        var middleName = attributes['middleName'];
+        var status = attributes['position'];
+
+        fio = lastName + ' ' + firstName + ' ' + middleName;
+        responseData['fio'] = fio;
+        responseData['status'] = status;
+      }
+      response = await http.get(url_student, headers: headers);
+      if (response.statusCode == 200) {
+        var jsonResponce = jsonDecode(response.body);
+        var data = jsonResponce['data'];
+        var attributes = data['attributes'];
+        var status = attributes['status'];
+
+        responseData['rang'] = status;
+      }
+
+      /*var response1 = await http.get(url_group, headers: headers);
+      if (response1.statusCode == 200) {
+        var jsonResponce = jsonDecode(response1.body);
+        var data = jsonResponce['data'];
+        var attributes = data['attributes'];
+        var timetableName = attributes['name'];
+        print('name: $timetableName');
+        responseData['group'] = timetableName;
+      }
+      else {
+        print("Ошибка в получении группы");
+      }*/
+
+      setState(() {
+        fio = responseData['fio'];
+        status = responseData['status'];
+        rang = responseData['rang'];
+        /*group = responseData['group'];*/
+        group = 'KI19-16/2';
+        uni = 'IKIT';
+        email = "gow@yandex.ru";
+      });
+    }
+    return responseData;
   }
 }

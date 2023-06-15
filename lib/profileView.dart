@@ -5,6 +5,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
+import 'models/Group.dart';
+
 class profieView extends StatefulWidget {
   @override
   _profileViewStatePage createState() => _profileViewStatePage();
@@ -209,6 +211,7 @@ class _profileViewStatePage extends State<profieView> {
     var url_name = Uri.parse('https://api.sfu-kras.ru/api/v1/user');
     var headers = {'Authorization': 'Bearer $accessToken'};
     final Map<String, dynamic> responseData = {};
+    List<Group> groups;
 
     if (accessToken != null) {
       var response = await http.get(url_name, headers: headers);
@@ -223,22 +226,33 @@ class _profileViewStatePage extends State<profieView> {
         fio = lastName + ' ' + firstName + ' ' + middleName;
         responseData['fio'] = fio;
       }
-      /*var response1 = await http.get(url_group, headers: headers);
+
+      var response1 = await http.get(url_group, headers: headers);
       if (response1.statusCode == 200) {
         var jsonResponce = jsonDecode(response1.body);
-        var data = jsonResponce['data'];
-        var attributes = data['attributes'];
-        var timetableName = attributes['name'];
-        print('name: $timetableName');
-        responseData['group'] = timetableName;
+        var prikazesData = jsonResponce['data'];
+
+        groups = prikazesData.map<Group>((json) {
+          var attributes = json['attributes'];
+          return Group(
+              name: attributes['name']
+          );
+        }).toList();
+
+        List<Group> newListGroup = groups.toSet().toList();
+        if (newListGroup.length == 1) {
+          String name = newListGroup[0].name;
+          responseData['group'] = name;
+        } else {
+          responseData['group'] = 'Данные недоступны';
+        }
       }
       else {
         print("Ошибка в получении группы");
-      }*/
+      }
       setState(() {
         fio = responseData['fio'];
-        /*group = responseData['group'];*/
-        group = 'KI19-16/2';
+        group = responseData['group'];
       });
     }
     return responseData;

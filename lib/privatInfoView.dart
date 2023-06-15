@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:my_sfu/models/Group.dart';
 
 class profieViewSudents extends StatefulWidget {
   @override
@@ -18,7 +19,6 @@ class _profileViewStatePage extends State<profieViewSudents> {
   String? uni;
   String? status;
   String? rang;
-  String? email;
 
   @override
   void initState() {
@@ -213,25 +213,6 @@ class _profileViewStatePage extends State<profieViewSudents> {
                                           )
                                         ],
                                       )),
-                                      Expanded(flex: 1, child: Row(
-                                        children: [
-                                          Expanded(flex: 10,
-                                              child: SvgPicture.asset('assets/image/email_icon.svg',
-                                                color: Colors.black,)),
-                                          Expanded(flex: 90,
-                                              child: Padding(padding: EdgeInsets.only(left: 10.0)
-                                                , child: Text(
-                                                  email ?? '',
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 15.0,
-                                                    fontFamily: 'Ubuntu',
-                                                    fontWeight: FontWeight.normal,
-                                                  ),
-                                                ),)
-                                          )
-                                        ],
-                                      )),
                                     ],
                                   ),
                                 )
@@ -262,6 +243,8 @@ class _profileViewStatePage extends State<profieViewSudents> {
     var url_student = Uri.parse('https://api.sfu-kras.ru/api/v1/student');
     var headers = {'Authorization': 'Bearer $accessToken'};
 
+    List<Group> groups;
+
     final Map<String, dynamic> responseData = {};
 
     if (accessToken != null) {
@@ -285,31 +268,53 @@ class _profileViewStatePage extends State<profieViewSudents> {
         var data = jsonResponce['data'];
         var attributes = data['attributes'];
         var status = attributes['status'];
+        var id = attributes['curriculumId'];
 
         responseData['rang'] = status;
+
+        var url_cafedra = Uri.parse('https://api.sfu-kras.ru/api/v1/curriculums/$id');
+        response = await http.get(url_cafedra, headers: headers);
+        if (response.statusCode == 200) {
+          var jsonResponce = jsonDecode(response.body);
+          var data = jsonResponce['data'];
+          var attributes = data['attributes'];
+          var cafedra = attributes['profileDepartment'];
+
+          responseData['cafedra'] = cafedra;
+        }
       }
 
-      /*var response1 = await http.get(url_group, headers: headers);
+      var response1 = await http.get(url_group, headers: headers);
       if (response1.statusCode == 200) {
         var jsonResponce = jsonDecode(response1.body);
-        var data = jsonResponce['data'];
-        var attributes = data['attributes'];
-        var timetableName = attributes['name'];
-        print('name: $timetableName');
-        responseData['group'] = timetableName;
+        var prikazesData = jsonResponce['data'];
+
+        groups = prikazesData.map<Group>((json) {
+          var attributes = json['attributes'];
+          return Group(
+              name: attributes['name']
+          );
+        }).toList();
+
+        List<Group> newListGroup = groups.toSet().toList();
+        if (newListGroup.length == 1) {
+          String name = newListGroup[0].name;
+          responseData['group'] = name;
+        } else {
+          responseData['group'] = 'Данные недоступны';
+        }
       }
       else {
         print("Ошибка в получении группы");
-      }*/
+      }
 
       setState(() {
         fio = responseData['fio'];
         status = responseData['status'];
         rang = responseData['rang'];
         /*group = responseData['group'];*/
-        group = 'KI19-16/2';
-        uni = 'IKIT';
-        email = "gow@yandex.ru";
+        group = responseData['group'];
+        uni = responseData['cafedra'];
       });
     }
     return responseData;

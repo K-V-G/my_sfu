@@ -304,7 +304,7 @@ class _studentsPlanView extends State<studentsPlanView> {
                 totalSelfWorkHours: attributes['totalSelfWorkHours'],
                 totalLectureHours: attributes['totalLectureHours'],
                 totalPracticeHours: attributes['totalPracticeHours'],
-                obyzatOrNeObyzat: attributes['isElective'],
+                obyzatOrNeObyzat: attributes['isOptional'],
                 hasExam: attributes['hasExam'],
                 hasPass: attributes['hasPass'],
                 yearOfStudy:  attributes['yearOfStudy'],

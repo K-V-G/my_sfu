@@ -27,14 +27,11 @@ class StudentsPlan {
   });
 
   @override
-  int get hashCode => id.hashCode ^ title.hashCode;
-
-  @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is StudentsPlan &&
-              runtimeType == other.runtimeType &&
-              id == other.id &&
-              title == other.title;
+          other is StudentsPlan && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 
 }

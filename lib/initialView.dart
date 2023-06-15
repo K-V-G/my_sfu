@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
+import 'package:connectivity/connectivity.dart';
 
 import 'package:flutter/material.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
@@ -136,6 +137,32 @@ class _initialViewState extends State<initialView> {
   }
 
   Future<String> fetchToken(BuildContext context) async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+
+      return Future.delayed(Duration.zero, () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Нет подключения к Интеренту'),
+              content: Text('Проверьте свое подключение к Интернету и еще раз попробуйте войти'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }).then((_) {
+        return 'No Internet Connection';
+      });
+    }
+
     var authorizationEndpoint = Uri.parse('https://api.sfu-kras.ru/oauth/authorize');
     var tokenEndpoint = Uri.parse('https://api.sfu-kras.ru/oauth/token');
     var clientId = '11';

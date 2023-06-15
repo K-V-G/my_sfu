@@ -18,6 +18,8 @@ class _zachetkaViewPage extends State<zachetkaView> {
   int? count_cource;
   int selectedButtonIndex = 0;
   int selectedButtonSemestr = 0;
+  int cource = 1;
+  int semestr = 1;
   Future<List<Zachetka>?>? futureData;
 
   @override
@@ -79,6 +81,7 @@ class _zachetkaViewPage extends State<zachetkaView> {
                           onPressed: () {
                             setState(() {
                             selectedButtonIndex = 0;
+                            cource = 1;
                             });
                             },
                             isOrange: selectedButtonIndex == 0,
@@ -91,6 +94,7 @@ class _zachetkaViewPage extends State<zachetkaView> {
                             onPressed: () {
                             setState(() {
                             selectedButtonIndex = 1;
+                            cource = 2;
                             });
                             },
                             isOrange: selectedButtonIndex == 1,
@@ -103,6 +107,7 @@ class _zachetkaViewPage extends State<zachetkaView> {
                             onPressed: () {
                             setState(() {
                             selectedButtonIndex = 2;
+                            cource = 3;
                             });
                             },
                             isOrange: selectedButtonIndex == 2,
@@ -115,6 +120,7 @@ class _zachetkaViewPage extends State<zachetkaView> {
                           onPressed: () {
                           setState(() {
                           selectedButtonIndex = 3;
+                          cource = 4;
                           });
                           },
                           isOrange: selectedButtonIndex == 3,
@@ -128,6 +134,7 @@ class _zachetkaViewPage extends State<zachetkaView> {
                           onPressed: () {
                           setState(() {
                           selectedButtonIndex = 4;
+                          cource = 5;
                           });
                           },
                           isOrange: selectedButtonIndex == 4,
@@ -148,6 +155,21 @@ class _zachetkaViewPage extends State<zachetkaView> {
                         onPressed: () {
                           setState(() {
                             selectedButtonSemestr = 0;
+                            if (cource == 1) {
+                              semestr = 1;
+                            }
+                            else if (cource == 2) {
+                              semestr = 3;
+                            }
+                            else if (cource == 3) {
+                              semestr = 5;
+                            }
+                            else if (cource == 4) {
+                              semestr = 7;
+                            }
+                            else if (cource == 5) {
+                              semestr = 9;
+                            }
                           });
                         },
                         isOrange: selectedButtonSemestr == 0,
@@ -158,6 +180,21 @@ class _zachetkaViewPage extends State<zachetkaView> {
                         onPressed: () {
                           setState(() {
                             selectedButtonSemestr = 1;
+                            if (cource == 1) {
+                              semestr = 2;
+                            }
+                            else if (cource == 2) {
+                              semestr = 4;
+                            }
+                            else if (cource == 3) {
+                              semestr = 6;
+                            }
+                            else if (cource == 4) {
+                              semestr = 8;
+                            }
+                            else if (cource == 5) {
+                              semestr = 10;
+                            }
                           });
                         },
                         isOrange: selectedButtonSemestr == 1,
@@ -187,11 +224,15 @@ class _zachetkaViewPage extends State<zachetkaView> {
                         itemCount: prikazes?.length ?? 0,
                         itemBuilder: (context, index) {
                           Zachetka prikaz = prikazes![index];
-                          return CellsZachetkaView(
-                            title: prikaz.discipline,
-                            type: prikaz.controlType,
-                            ocenka: prikaz.finalGrade,
-                          );
+                          if (prikaz.yearOfStudy == cource && prikaz.semester == semestr) {
+                            return CellsZachetkaView(
+                              title: prikaz.discipline,
+                              type: prikaz.controlType,
+                              ocenka: prikaz.finalGrade,
+                            );
+                          } else {
+                            return Container(); // Return an empty container for objects that don't meet the filter criteria
+                          }
                         },
                       );
                     } else {

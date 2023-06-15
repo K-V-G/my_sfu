@@ -123,7 +123,7 @@ class _cellsZachetkaState extends State<CellsZachetkaView> {
           return Color(0xffEB00FF);
         }
       }
-      else if (ocenka == "Н/Я") {
+      else if (ocenka == "Н/я") {
         if (id == 1) {
           return Color(0xffFAEBEB);
         }
@@ -132,7 +132,7 @@ class _cellsZachetkaState extends State<CellsZachetkaView> {
         }
       }
     }
-      else {
+      else if (type == "Зачет") {
         if (ocenka == "Зачёт" || ocenka == "Зачет") {
           if (id == 1) {
             return Color(0xffEDF7ED);
@@ -149,7 +149,7 @@ class _cellsZachetkaState extends State<CellsZachetkaView> {
             return Color(0xffEB4351);
           }
         }
-        else if (ocenka == "Н/Я") {
+        else if (ocenka == "Н/я") {
           if (id == 1) {
             return Color(0xffFAEBEB);
           }
@@ -158,6 +158,74 @@ class _cellsZachetkaState extends State<CellsZachetkaView> {
           }
         }
       }
+      else if (type == "Практика") {
+      if (ocenka == "Отл") {
+        if (id == 1) {
+          return Color(0xffEDF7ED);
+        }
+        else if (id == 2) {
+          return Color(0xff54B754);
+        }
+      }
+      else if (ocenka == "Хор") {
+        if (id == 1) {
+          return Color(0xffCBCDFF);
+        }
+        else if (id == 2) {
+          return Color(0xff000AFF);
+        }
+      }
+      else if (ocenka == "Удовл") {
+        if (id == 1) {
+          return Color(0xffF8DBFB);
+        }
+        else if (id == 2) {
+          return Color(0xffEB00FF);
+        }
+      }
+      else if (ocenka == "Н/я") {
+        if (id == 1) {
+          return Color(0xffFAEBEB);
+        }
+        else if (id == 2) {
+          return Color(0xffEB4351);
+        }
+      }
+    }
+    else if (type == "Курсовой проект") {
+      if (ocenka == "Отл") {
+        if (id == 1) {
+          return Color(0xffEDF7ED);
+        }
+        else if (id == 2) {
+          return Color(0xff54B754);
+        }
+      }
+      else if (ocenka == "Хор") {
+        if (id == 1) {
+          return Color(0xffCBCDFF);
+        }
+        else if (id == 2) {
+          return Color(0xff000AFF);
+        }
+      }
+      else if (ocenka == "Удовл") {
+        if (id == 1) {
+          return Color(0xffF8DBFB);
+        }
+        else if (id == 2) {
+          return Color(0xffEB00FF);
+        }
+      }
+      else if (ocenka == "Н/я") {
+        if (id == 1) {
+          return Color(0xffFAEBEB);
+        }
+        else if (id == 2) {
+          return Color(0xffEB4351);
+        }
+      }
+    }
     return Colors.black;
   }
 }

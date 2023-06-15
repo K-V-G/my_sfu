@@ -150,7 +150,7 @@ class _studentsPlanView extends State<studentsPlanView> {
                   flex: 5,
                   child:Row(
                     children: [
-                      Expanded(flex: 100, child: ListView(
+                      Expanded(child: ListView(
                         scrollDirection: Axis.vertical,
                         children: [
                           CellsSudentPlan(

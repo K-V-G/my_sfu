@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:my_sfu/models/Ocenky.dart';
 
-import 'button/ButtonCource.dart';
-import 'button/ButtonSemestr.dart';
 import 'cells/CellsOcenky.dart';
+
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ocenkyView extends StatefulWidget {
 
@@ -11,13 +14,30 @@ class ocenkyView extends StatefulWidget {
 }
 
 class _ocenkyViewPage extends State<ocenkyView> {
-  var count_cource = 5;
-  int selectedButtonIndex = 0;
-  int selectedButtonSemestr = 0;
+  Future<List<Ocenky>?>? dataFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    dataFuture = getAllOCenky();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+        body: FutureBuilder<void>(
+        future: dataFuture,
+        builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      } else if (snapshot.hasError) {
+        return Center(
+          child: Text('Ошибка: ${snapshot.error}'),
+        );
+      } else {
+        return Stack(
         children: [
           Container(
             color: const Color(0xffFFFFFF),
@@ -43,133 +63,86 @@ class _ocenkyViewPage extends State<ocenkyView> {
                   ),
                 ),
               ),
-              Expanded(flex: 1, child: Padding(padding: EdgeInsets.only(left: 10.0, right: 10.0), child:
-              ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  Container(
-                    width: 90,
-                    child: ButtonCource(
-                      buttonText: '1 курс',
-                      onPressed: () {
-                        setState(() {
-                          selectedButtonIndex = 0;
-                        });
-                      },
-                      isOrange: selectedButtonIndex == 0,
-                    ),
-                  ),
-                  Container(
-                    width: 90,
-                    child: ButtonCource(
-                      buttonText: '2 курс',
-                      onPressed: () {
-                        setState(() {
-                          selectedButtonIndex = 1;
-                        });
-                      },
-                      isOrange: selectedButtonIndex == 1,
-                    ),
-                  ),
-                  Container(
-                    width: 90,
-                    child: ButtonCource(
-                      buttonText: '3 курс',
-                      onPressed: () {
-                        setState(() {
-                          selectedButtonIndex = 2;
-                        });
-                      },
-                      isOrange: selectedButtonIndex == 2,
-                    ),
-                  ),
-                  Container(
-                    width: 90,
-                    child: ButtonCource(
-                      buttonText: '4 курс',
-                      onPressed: () {
-                        setState(() {
-                          selectedButtonIndex = 3;
-                        });
-                      },
-                      isOrange: selectedButtonIndex == 3,
-                    ),
-                  ),
-                  if (count_cource == 5)
-                    Container(
-                      width: 90,
-                      child: ButtonCource(
-                        buttonText: '5 курс',
-                        onPressed: () {
-                          setState(() {
-                            selectedButtonIndex = 4;
-                          });
-                        },
-                        isOrange: selectedButtonIndex == 4,
-                      ),
-                    ),
-                ],
-
-              ),
-              )
-              ),
-              Expanded(flex: 1, child: Row(
-                children: [
-                  Expanded(flex: 5, child: Text("")),
-                  Expanded(flex: 90, child: Row(
-                    children: [
-                      Expanded(flex: 45, child: ButtonSemestr(
-                        buttonText: '1 семестр',
-                        onPressed: () {
-                          setState(() {
-                            selectedButtonSemestr = 0;
-                          });
-                        },
-                        isOrange: selectedButtonSemestr == 0,
-                      ),),
-                      Expanded(flex: 5, child: Text("")),
-                      Expanded(flex: 45, child: ButtonSemestr(
-                        buttonText: '2 семестр',
-                        onPressed: () {
-                          setState(() {
-                            selectedButtonSemestr = 1;
-                          });
-                        },
-                        isOrange: selectedButtonSemestr == 1,
-                      )),
-                    ],
-                  ),),
-                  Expanded(flex: 5, child: Text("")),
-                ],
-              )),
-
               Expanded(
-                  flex: 5,
-                  child:Row(
-                    children: [
-                      Expanded(flex: 100, child: ListView(
-                        scrollDirection: Axis.vertical,
-                        children: [
-                          CellsOcenky(
-                            title: 'Курс: 2021 весна, Философия, ИКИТ',
-                          ),
-                          CellsOcenky(
-                            title: 'Курс: Алгоритмы и структуры данных (адаптивный)',
-                          ),
-                          CellsOcenky(
-                            title: 'Курс: Алгоритмы и структуры данных (адаптивный)',
-                          ),
-                          CellsOcenky(
-                            title: 'Курс: Алгоритмы и структуры данных (адаптивный)',
-                          ),
-                        ],
-                      )),
-                    ],
-                  )),
+                flex: 7,
+                child: FutureBuilder<List<Ocenky>?>(
+                  future: dataFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: Text('Ошибка: ${snapshot.error}'),
+                      );
+                    } else if (snapshot.hasData) {
+                      List<Ocenky>? ocenki = snapshot.data;
+                      return ListView.builder(
+                        itemCount: ocenki?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          Ocenky ocenky = ocenki![index];
+                          return CellsOcenky(
+                            title: ocenky.title,
+                            id: ocenky.id,
+                          );
+                        },
+                      );
+                    } else {
+                      return Center(
+                        child: Text('Нет данных.'),
+                      );
+                    }
+                  },
+                ),
+              ),
             ],
           ),
         ],
-      ),
+      );
+      }
+        },
+        ),
     );
+  }
+
+
+  Future<List<Ocenky>?>? getAllOCenky() async {
+    final storage = FlutterSecureStorage();
+    String? accessToken = await storage.read(key: 'access_token');
+    String? refreshToken = await storage.read(key: 'refresh_token');
+    List<Ocenky> ocenky;
+
+    var url_base = Uri.parse('https://api.sfu-kras.ru/api/v1/student/elearning/courses?page%5Bsize%5D=1&page%5Bnumber%5D=1');
+    var headers = {'Authorization': 'Bearer $accessToken'};
+
+
+    if (accessToken != null) {
+      var response = await http.get(url_base, headers: headers);
+      if (response.statusCode == 200) {
+        var jsonResponce = jsonDecode(response.body);
+        var data = jsonResponce['meta'];
+        var page = data['page'];
+        var total = page['total'];
+
+        var url_redirect = Uri.parse('https://api.sfu-kras.ru/api/v1/student/elearning/courses?page%5Bsize%5D=$total&page%5Bnumber%5D=1');
+        response = await http.get(url_redirect, headers: headers);
+        if (response.statusCode == 200) {
+          jsonResponce = jsonDecode(response.body);
+          var prikazesData = jsonResponce['data'];
+
+          ocenky = prikazesData.map<Ocenky>((json) {
+            var attributes = json['attributes'];
+            return Ocenky(
+              id: json['id'],
+              title: attributes['name'],
+            );
+          }).toList();
+
+          return ocenky;
+        }
+      }
+    }
+    return null;
   }
 }

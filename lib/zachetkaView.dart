@@ -219,11 +219,11 @@ class _zachetkaViewPage extends State<zachetkaView> {
                         child: Text('Ошибка: ${snapshot.error}'),
                       );
                     } else if (snapshot.hasData) {
-                      List<Zachetka>? prikazes = snapshot.data;
+                      List<Zachetka>? zachetki = snapshot.data;
                       return ListView.builder(
-                        itemCount: prikazes?.length ?? 0,
+                        itemCount: zachetki?.length ?? 0,
                         itemBuilder: (context, index) {
-                          Zachetka prikaz = prikazes![index];
+                          Zachetka prikaz = zachetki![index];
                           if (prikaz.yearOfStudy == cource && prikaz.semester == semestr) {
                             return CellsZachetkaView(
                               title: prikaz.discipline,

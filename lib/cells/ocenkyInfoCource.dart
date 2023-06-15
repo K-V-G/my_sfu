@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class ocenkyCourceInfo extends StatefulWidget {
-  final String title;
-  final double minZnach;
-  final double maxZnach;
-  final double tecZnach;
+  final String? title;
+  final dynamic minZnach;
+  final dynamic maxZnach;
+  final dynamic tecZnach;
 
 
   ocenkyCourceInfo({required this.title,
@@ -42,7 +42,7 @@ class _ocenkyCourceInfoState extends State<ocenkyCourceInfo> {
                   Padding(
                     padding: EdgeInsets.only(right: 10.0),
                     child: Text(
-                      widget.title,
+                      widget.title ?? '',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 13.0,
@@ -64,9 +64,12 @@ class _ocenkyCourceInfoState extends State<ocenkyCourceInfo> {
                           child:
                               Column(
                                 children: [
+                              Padding(
+                              padding: EdgeInsets.only(top: 10.0),
+                                  child:
                                   Row(
                                     children: [
-                                      Expanded(flex: 50, child: Text(
+                                      const Expanded(flex: 50, child: Text(
                                             "Оценка",
                                             style: TextStyle(
                                             color: Colors.black,
@@ -76,15 +79,15 @@ class _ocenkyCourceInfoState extends State<ocenkyCourceInfo> {
                                             ),
                                             ),),
                                       Expanded(flex: 50, child:
-                                      Container(
+                                           Container(
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(
                                           color: getColorOnType(widget.maxZnach,
                                               widget.tecZnach, 1),
-                                          borderRadius: BorderRadius.circular(10.0), // Установите радиус закругления
+                                          borderRadius: BorderRadius.circular(10.0),
                                         ),
                                         child: Text(
-                                          widget.tecZnach.toString(),
+                                          widget.tecZnach != null ? widget.tecZnach.toString() : "-",
                                           style: TextStyle(
                                             color: getColorOnType(widget.maxZnach,
                                                 widget.tecZnach, 2),
@@ -93,39 +96,46 @@ class _ocenkyCourceInfoState extends State<ocenkyCourceInfo> {
                                             fontWeight: FontWeight.normal,
                                           ),
                                         ),
-                                      ),),
+                                      ),
+                                        )
                                     ],
-                                  ),
+                                  )),
                                   SizedBox(height: 10.0,),
-                                  Row(
-                                      children: [
-                                        Expanded(flex: 50, child: Text(
-                                          "Диапазон",
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 13.0,
-                                            fontFamily: 'Ubuntu',
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),),
-                                        Expanded(flex: 50, child: Container(
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            color: Color(0xffD9D9D9),
-                                            borderRadius: BorderRadius.circular(10.0), // Установите радиус закругления
-                                          ),
-                                          child: Text(
-                                            "${widget.minZnach.toString()} - ${widget.maxZnach.toString()}",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 16.0,
-                                              fontFamily: 'Ubuntu',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                        ),),
+                                    Padding(
+                                      padding: EdgeInsets.only(bottom: 10.0),
+                                      child:
+                                        Row(
+                                            children: [
+                                              const Expanded(flex: 50, child: Text(
+                                                "Диапазон",
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 13.0,
+                                                  fontFamily: 'Ubuntu',
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),),
+                                              Expanded(flex: 50, child:
+                                              Container(
+                                                alignment: Alignment.center,
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xffD9D9D9),
+                                                  borderRadius: BorderRadius.circular(10.0),
+                                                ),
+                                                child: Text(
+                                                  "${widget.minZnach.toString()} - ${widget.maxZnach.toString()}",
+                                                  textAlign: TextAlign.center,
+                                                  style: const TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 12.0,
+                                                    fontFamily: 'Ubuntu',
+                                                    fontWeight: FontWeight.normal,
+
+                                                  ),
+                                                ),
+                                              ),),
                                       ],
-                                  )
+                                  ))
                                 ],
                               )
 
@@ -133,46 +143,82 @@ class _ocenkyCourceInfoState extends State<ocenkyCourceInfo> {
             ],
           ),
         ),
-        SizedBox(height: 20.0),
+        const SizedBox(height: 20.0),
       ],
     );
 
   }
 
-  Color getColorOnType(double maxZnach, double tecZnach, int id) {
-    double coef = tecZnach / maxZnach;
+  Color getColorOnType(dynamic maxZnach, dynamic tecZnach, int id) {
+    if (maxZnach is double && tecZnach is double) {
+        double coef = tecZnach! / maxZnach!;
 
-    if (coef >= 0.8) {
-      if (id == 1) {
-        return Color(0xffEDF7ED);
-      }
-      else if (id == 2) {
-        return Color(0xff54B754);
-      }
+        if (coef >= 0.8) {
+          if (id == 1) {
+            return Color(0xffEDF7ED);
+          }
+          else if (id == 2) {
+            return Color(0xff54B754);
+          }
+        }
+        else if (coef >= 0.6 && coef < 0.8) {
+          if (id == 1) {
+            return Color(0xffCBCDFF);
+          }
+          else if (id == 2) {
+            return Color(0xff000AFF);
+          }
+        }
+        else if (coef >= 0.4 && coef < 0.6 ) {
+          if (id == 1) {
+            return Color(0xffF8DBFB);
+          }
+          else if (id == 2) {
+            return Color(0xffEB00FF);
+          }
+        }
+        else {
+          if (id == 1) {
+            return Color(0xffFAEBEB);
+          }
+          else if (id == 2) {
+            return Color(0xffEB4351);
+          }
+        }
+        return Colors.black;
     }
-      else if (coef >= 0.6 && coef < 0.8) {
+    else if (tecZnach is String) {
+      if (tecZnach == 'зачтено') {
         if (id == 1) {
-          return Color(0xffCBCDFF);
+          return Color(0xffEDF7ED);
         }
         else if (id == 2) {
-          return Color(0xff000AFF);
+          return Color(0xff54B754);
         }
       }
-      else if (coef >= 0.4 && coef < 0.6 ) {
+      else if (tecZnach == 'п') {
         if (id == 1) {
-          return Color(0xffF8DBFB);
+          return Color(0xffEDF7ED);
         }
         else if (id == 2) {
-          return Color(0xffEB00FF);
+          return Color(0xff54B754);
         }
       }
       else {
-      if (id == 1) {
-        return Color(0xffFAEBEB);
+        if (id == 1) {
+          return Color(0xffFAEBEB);
+        }
+        else if (id == 2) {
+          return Color(0xffEB4351);
+        }
       }
-      else if (id == 2) {
-        return Color(0xffEB4351);
-      }
+    }
+
+    if (id == 1) {
+      return Color(0xffFAEBEB);
+    }
+    else if (id == 2) {
+      return Color(0xffEB4351);
     }
     return Colors.black;
   }

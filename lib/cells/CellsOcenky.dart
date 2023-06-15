@@ -4,9 +4,10 @@ import '../courceInfo.dart';
 
 class CellsOcenky extends StatefulWidget {
   final String title;
+  final int id;
 
   CellsOcenky({
-    required this.title});
+    required this.title, required this.id});
 
   @override
   _CellsOcenkyState createState() => _CellsOcenkyState();
@@ -23,7 +24,7 @@ class _CellsOcenkyState extends State<CellsOcenky> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => courceOcenkyInfo(title: widget.title),
+                builder: (context) => courceOcenkyInfo(title: widget.title, id: widget.id,),
               ),
             );
           },

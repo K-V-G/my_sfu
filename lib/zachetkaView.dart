@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:my_sfu/cells/CellsZachetka.dart';
 
+import 'package:my_sfu/models/Zachetka.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 import 'button/ButtonCource.dart';
 import 'button/ButtonSemestr.dart';
 
@@ -10,13 +15,34 @@ class zachetkaView extends StatefulWidget {
 }
 
 class _zachetkaViewPage extends State<zachetkaView> {
-  var count_cource = 5;
+  int? count_cource;
   int selectedButtonIndex = 0;
   int selectedButtonSemestr = 0;
+  Future<List<Zachetka>?>? futureData;
+
+  @override
+  void initState() {
+    super.initState();
+    futureData = getAllExamAndZachet();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+        body: FutureBuilder<void>(
+        future: futureData,
+        builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      } else if (snapshot.hasError) {
+        return Center(
+          child: Text('Ошибка: ${snapshot.error}'),
+        );
+      } else {
+        return Stack(
         children: [
           Container(
             color: const Color(0xffFFFFFF),
@@ -143,40 +169,102 @@ class _zachetkaViewPage extends State<zachetkaView> {
               )),
 
               Expanded(
-                  flex: 5,
-                  child:Row(
-                  children: [
-                      Expanded(flex: 100, child: ListView(
-                            scrollDirection: Axis.vertical,
-                            children: [
-                        CellsZachetkaView(
-                        title: 'Теория и практика эффективного речевого общения И дааааа',
-                        type: 'Зачёт',
-                        ocenka: 'Не зачёт',
-                        ),
-                        CellsZachetkaView(
-                        title: 'Теория и практика эффективного речевого общения',
-                        type: 'Экзамен',
-                        ocenka: 'Удовлетворительно',
-                        ),
-                              CellsZachetkaView(
-                                title: 'Теория и практика эффективного речевого общения',
-                                type: 'Экзамен',
-                                ocenka: 'Хорошо',
-                              ),
-                              CellsZachetkaView(
-                                title: 'Теория и практика эффективного речевого общения',
-                                type: 'Экзамен',
-                                ocenka: 'Отлично',
-                              )
-                        ],
-                        )),
-                    ],
-                      )),
+                flex: 5,
+                child: FutureBuilder<List<Zachetka>?>(
+                  future: futureData,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: Text('Ошибка: ${snapshot.error}'),
+                      );
+                    } else if (snapshot.hasData) {
+                      List<Zachetka>? prikazes = snapshot.data;
+                      return ListView.builder(
+                        itemCount: prikazes?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          Zachetka prikaz = prikazes![index];
+                          return CellsZachetkaView(
+                            title: prikaz.discipline,
+                            type: prikaz.controlType,
+                            ocenka: prikaz.finalGrade,
+                          );
+                        },
+                      );
+                    } else {
+                      return Center(
+                        child: Text('Нет данных.'),
+                      );
+                    }
+                  },
+                ),
+              ),
                               ],
           ),
         ],
-      ),
+      );
+        }
+        },
+        ),
     );
+  }
+
+
+  Future<List<Zachetka>?>? getAllExamAndZachet() async {
+    final storage = FlutterSecureStorage();
+    String? accessToken = await storage.read(key: 'access_token');
+    String? refreshToken = await storage.read(key: 'refresh_token');
+    List<Zachetka>? prikazes;
+    Map<String, List<dynamic>>? maps = {};
+    var count_c;
+
+    var url_student = Uri.parse('https://api.sfu-kras.ru/api/v1/student');
+    var url_base = Uri.parse('https://api.sfu-kras.ru/api/v1/student/grades?page%5Bsize%5D=1&page%5Bnumber%5D=1');
+    var headers = {'Authorization': 'Bearer $accessToken'};
+
+
+    if (accessToken != null) {
+      var response = await http.get(url_base, headers: headers);
+      if (response.statusCode == 200) {
+        var jsonResponce = jsonDecode(response.body);
+        var data = jsonResponce['meta'];
+        var total = data['total'];
+
+        var url_redirect = Uri.parse('https://api.sfu-kras.ru/api/v1/student/grades?page%5Bsize%5D=$total&page%5Bnumber%5D=1');
+        response = await http.get(url_redirect, headers: headers);
+        if (response.statusCode == 200) {
+          jsonResponce = jsonDecode(response.body);
+          var prikazesData = jsonResponce['data'];
+
+          prikazes = prikazesData.map<Zachetka>((json) {
+            var attributes = json['attributes'];
+            return Zachetka(
+                yearOfStudy: attributes['yearOfStudy'],
+                semester: attributes['semester'],
+                discipline: attributes['discipline'],
+                controlType: attributes['controlType'],
+                finalGrade: attributes['finalGrade'],
+            );
+          }).toList();
+        }
+      }
+      response = await http.get(url_student, headers: headers);
+      if (response.statusCode == 200) {
+        var jsonResponce = jsonDecode(response.body);
+        var data = jsonResponce['data'];
+        var attributes = data['attributes'];
+        var god_obychenia = attributes['termPeriodYears'];
+        count_c = god_obychenia;
+      }
+    }
+
+    setState(() {
+      count_cource = count_c;
+    });
+
+    return prikazes;
   }
 }

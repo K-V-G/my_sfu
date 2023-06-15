@@ -99,7 +99,7 @@ class _cellsZachetkaState extends State<CellsZachetkaView> {
 
   Color getColorOnType(String type, String ocenka, int id) {
     if (type == "Экзамен") {
-      if (ocenka == "Отлично") {
+      if (ocenka == "Отл") {
         if (id == 1) {
           return Color(0xffEDF7ED);
         }
@@ -107,7 +107,7 @@ class _cellsZachetkaState extends State<CellsZachetkaView> {
           return Color(0xff54B754);
         }
       }
-      else if (ocenka == "Хорошо") {
+      else if (ocenka == "Хор") {
         if (id == 1) {
           return Color(0xffCBCDFF);
         }
@@ -115,7 +115,7 @@ class _cellsZachetkaState extends State<CellsZachetkaView> {
           return Color(0xff000AFF);
         }
       }
-      else if (ocenka == "Удовлетворительно") {
+      else if (ocenka == "Удовл") {
         if (id == 1) {
           return Color(0xffF8DBFB);
         }
@@ -123,7 +123,6 @@ class _cellsZachetkaState extends State<CellsZachetkaView> {
           return Color(0xffEB00FF);
         }
       }
-    }
       else if (ocenka == "Н/Я") {
         if (id == 1) {
           return Color(0xffFAEBEB);
@@ -132,6 +131,7 @@ class _cellsZachetkaState extends State<CellsZachetkaView> {
           return Color(0xffEB4351);
         }
       }
+    }
       else {
         if (ocenka == "Зачёт" || ocenka == "Зачет") {
           if (id == 1) {

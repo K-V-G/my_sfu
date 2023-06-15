@@ -27,9 +27,6 @@ class AuthorizationScreen extends StatelessWidget {
           if (request.url.startsWith('mobile-app://callback')) {
             String? authorizationCode = Uri.parse(request.url).queryParameters['code'];
             if (authorizationCode != null) {
-              print(authorizationCode);
-              print(authorizationCode);
-              print(authorizationCode);
               String acessToken = await getTokens(authorizationCode, codeVerifier);
               await getUserInfo(acessToken);
               Navigator.push(
@@ -76,9 +73,6 @@ class AuthorizationScreen extends StatelessWidget {
       await storage.write(key: 'refresh_token', value: refreshToken);
       await storage.write(key: 'expires_in', value: expiresIn.toString());
 
-      print("Access Token: $accessToken");
-      print("Refresh Token: $refreshToken");
-      print("ExpiresIn: $expiresIn");
     }
     else {
       print('Ошибка получения токенов авторизации: ${response.statusCode}}');

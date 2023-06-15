@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CellsSudentPlan extends StatefulWidget {
-  final String type;
-  final String title;
-  final String cafedra;
-  final String typeExam;
-  final String timeLecture;
-  final String timePrac;
-  final String timeSam;
+  final String? type;
+  final String? title;
+  final String? cafedra;
+  final String? typeExam;
+  final String? timeLecture;
+  final String? timePrac;
+  final String? timeSam;
 
   CellsSudentPlan({required this.type,
     required this.title, required this.cafedra, required this.typeExam,
@@ -50,7 +50,7 @@ class _CellsSudentPlanState extends State<CellsSudentPlan> {
                     Padding(
                       padding: EdgeInsets.only(left: 5.0),
                       child: Text(
-                        widget.type,
+                        widget.type ?? 'Данные отсутствуют',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 13.0,
@@ -71,7 +71,7 @@ class _CellsSudentPlanState extends State<CellsSudentPlan> {
                       Padding(
                         padding: EdgeInsets.only(left: 5.0),
                         child: Text(
-                          widget.title,
+                          widget.title ?? 'Данные отсутствуют',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 13.0,
@@ -93,7 +93,7 @@ class _CellsSudentPlanState extends State<CellsSudentPlan> {
                       Padding(
                         padding: EdgeInsets.only(left: 5.0),
                         child: Text(
-                          widget.cafedra,
+                          widget.cafedra ?? 'Данные отсутствуют',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 13.0,
@@ -115,7 +115,7 @@ class _CellsSudentPlanState extends State<CellsSudentPlan> {
                       Padding(
                         padding: EdgeInsets.only(left: 5.0),
                         child: Text(
-                          widget.typeExam,
+                          widget.typeExam ?? 'Данные отсутствуют',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 13.0,
@@ -144,7 +144,7 @@ class _CellsSudentPlanState extends State<CellsSudentPlan> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                widget.timeLecture,
+                                widget.timeLecture ?? 'Данные отсутствуют',
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
                                   color: Colors.black,
@@ -154,7 +154,7 @@ class _CellsSudentPlanState extends State<CellsSudentPlan> {
                                 ),
                               ),
                               Text(
-                                widget.timePrac,
+                                widget.timePrac ?? 'Данные отсутствуют',
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
                                   color: Colors.black,
@@ -164,7 +164,7 @@ class _CellsSudentPlanState extends State<CellsSudentPlan> {
                                 ),
                               ),
                               Text(
-                                widget.timeSam,
+                                widget.timeSam ?? 'Данные отсутствуют',
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
                                   color: Colors.black,

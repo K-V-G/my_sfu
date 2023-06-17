@@ -41,7 +41,7 @@ class _initialViewState extends State<initialView> {
                                     child: Align(
                                       alignment: Alignment.centerLeft,
                                       child: Text(
-                                        'Мой СФУ',
+                                        'Студент СФУ',
                                         style: TextStyle(
                                           fontSize: 24.0,
                                           fontFamily: 'Roboto',

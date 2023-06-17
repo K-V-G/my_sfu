@@ -8,6 +8,7 @@ import 'dart:convert';
 
 import '../button/ButtonCource.dart';
 import '../button/ButtonSemestr.dart';
+import '../cache/DB_Helper.dart';
 
 class zachetkaView extends StatefulWidget {
   @override
@@ -280,11 +281,27 @@ class _zachetkaViewPage extends State<zachetkaView> {
     List<Zachetka>? prikazes;
     Map<String, List<dynamic>>? maps = {};
     var count_c;
+    final dbHelper = DatabaseHelper.instance;
 
     var url_student = Uri.parse('https://api.sfu-kras.ru/api/v1/student');
     var url_base = Uri.parse('https://api.sfu-kras.ru/api/v1/student/grades?page%5Bsize%5D=1&page%5Bnumber%5D=1');
     var headers = {'Authorization': 'Bearer $accessToken'};
 
+    List<Zachetka>? cachedData = await dbHelper.getZachetki();
+
+    if (cachedData != null && cachedData.isNotEmpty) {
+      final currentDate = DateTime.now();
+      final cachedItem = cachedData.first;
+      final liniyaGizni = DateTime.fromMillisecondsSinceEpoch(cachedItem.liniyaGizni!);
+      final countCource = cachedItem.count_c;
+
+      if (currentDate.isBefore(liniyaGizni)) {
+        setState(() {
+          count_cource = countCource;
+        });
+        return cachedData;
+      }
+    }
 
     if (accessToken != null) {
       var response = await http.get(url_base, headers: headers);
@@ -294,6 +311,16 @@ class _zachetkaViewPage extends State<zachetkaView> {
         var total = data['total'];
 
         var url_redirect = Uri.parse('https://api.sfu-kras.ru/api/v1/student/grades?page%5Bsize%5D=$total&page%5Bnumber%5D=1');
+
+        response = await http.get(url_student, headers: headers);
+        if (response.statusCode == 200) {
+          var jsonResponce = jsonDecode(response.body);
+          var data = jsonResponce['data'];
+          var attributes = data['attributes'];
+          var god_obychenia = attributes['termPeriodYears'];
+          count_c = god_obychenia;
+        }
+
         response = await http.get(url_redirect, headers: headers);
         if (response.statusCode == 200) {
           jsonResponce = jsonDecode(response.body);
@@ -301,24 +328,21 @@ class _zachetkaViewPage extends State<zachetkaView> {
 
           prikazes = prikazesData.map<Zachetka>((json) {
             var attributes = json['attributes'];
-            print("Displina: ${attributes['discipline']}");
             return Zachetka(
-                yearOfStudy: attributes['yearOfStudy'],
-                semester: attributes['semester'],
-                discipline: attributes['discipline'],
-                controlType: attributes['controlType'],
-                finalGrade: attributes['finalGrade'],
+              yearOfStudy: attributes['yearOfStudy'],
+              semester: attributes['semester'],
+              discipline: attributes['discipline'],
+              controlType: attributes['controlType'],
+              finalGrade: attributes['finalGrade'],
+              count_c: count_c,
+              liniyaGizni: DateTime.now().add(Duration(days: 30)).millisecondsSinceEpoch,
             );
           }).toList();
+
+          prikazes?.forEach((zachetka) {
+            dbHelper.saveZachetka(zachetka);
+          });
         }
-      }
-      response = await http.get(url_student, headers: headers);
-      if (response.statusCode == 200) {
-        var jsonResponce = jsonDecode(response.body);
-        var data = jsonResponce['data'];
-        var attributes = data['attributes'];
-        var god_obychenia = attributes['termPeriodYears'];
-        count_c = god_obychenia;
       }
     }
 
@@ -328,6 +352,7 @@ class _zachetkaViewPage extends State<zachetkaView> {
 
     return prikazes;
   }
+
 
   int getSemestr(int course, int id) {
     if (cource == 1) {

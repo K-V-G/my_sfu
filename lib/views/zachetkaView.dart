@@ -301,6 +301,7 @@ class _zachetkaViewPage extends State<zachetkaView> {
 
           prikazes = prikazesData.map<Zachetka>((json) {
             var attributes = json['attributes'];
+            print("Displina: ${attributes['discipline']}");
             return Zachetka(
                 yearOfStudy: attributes['yearOfStudy'],
                 semester: attributes['semester'],

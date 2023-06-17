@@ -38,16 +38,18 @@ class _cellsZachetkaState extends State<CellsZachetkaView> {
               padding: EdgeInsets.only(left: 20.0, top: 10.0, bottom: 10.0),
               child: Column(
                 children: [
-                Text(
+                  Align(alignment: Alignment.topLeft, child: Text(
                     widget.title,
                     style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14.0,
-                    fontFamily: 'Ubuntu',
-                    fontWeight: FontWeight.w400,
+                      color: Colors.black,
+                      fontSize: 14.0,
+                      fontFamily: 'Ubuntu',
+                      fontWeight: FontWeight.w400,
                     ),
-                ),
-                Padding(padding: EdgeInsets.only(top: 5.0), child:
+                  ),),
+
+              Align(alignment: Alignment.topLeft, child:
+              Padding(padding: EdgeInsets.only(top: 5.0), child:
                   Row(
                   children: [
                   SvgPicture.asset('assets/image/exam_or_zachet_icons.svg'),
@@ -58,7 +60,7 @@ class _cellsZachetkaState extends State<CellsZachetkaView> {
                     fontWeight: FontWeight.w600,
                   ),),
                   ],
-                  )),
+                  ))),
                   ],
                   ),
                   ),

@@ -1,26 +1,28 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
-import 'package:my_sfu/models/Ocenky.dart';
 
-import 'cells/CellsOcenky.dart';
-
+import '../cells/CellsPricazy.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class ocenkyView extends StatefulWidget {
+import '../models/Prikaz.dart';
 
+class prikazyView extends StatefulWidget {
   @override
-  _ocenkyViewPage createState() => _ocenkyViewPage();
+  _prikazyViewPage createState() => _prikazyViewPage();
 }
 
-class _ocenkyViewPage extends State<ocenkyView> {
-  Future<List<Ocenky>?>? dataFuture;
+class _prikazyViewPage extends State<prikazyView> {
+  Future<List<Prikaz>?>? dataFuture;
 
   @override
   void initState() {
     super.initState();
-    dataFuture = getAllOCenky();
+    dataFuture = getAllPrikazes();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +54,7 @@ class _ocenkyViewPage extends State<ocenkyView> {
                   child: Align(
                     alignment: Alignment.center,
                     child: Text(
-                      "Оценки",
+                      "Приказы",
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 22.0,
@@ -65,7 +67,7 @@ class _ocenkyViewPage extends State<ocenkyView> {
               ),
               Expanded(
                 flex: 7,
-                child: FutureBuilder<List<Ocenky>?>(
+                child: FutureBuilder<List<Prikaz>?>(
                   future: dataFuture,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -77,14 +79,15 @@ class _ocenkyViewPage extends State<ocenkyView> {
                         child: Text('Ошибка: ${snapshot.error}'),
                       );
                     } else if (snapshot.hasData) {
-                      List<Ocenky>? ocenki = snapshot.data;
+                      List<Prikaz>? prikazes = snapshot.data;
                       return ListView.builder(
-                        itemCount: ocenki?.length ?? 0,
+                        itemCount: prikazes?.length ?? 0,
                         itemBuilder: (context, index) {
-                          Ocenky ocenky = ocenki![index];
-                          return CellsOcenky(
-                            title: ocenky.title,
-                            id: ocenky.id,
+                          Prikaz prikaz = prikazes![index];
+                          return CellsPricazy(
+                            nomer: prikaz.nomer,
+                            title: prikaz.title,
+                            data: prikaz.date,
                           );
                         },
                       );
@@ -100,20 +103,20 @@ class _ocenkyViewPage extends State<ocenkyView> {
           ),
         ],
       );
-      }
+        }
         },
         ),
     );
   }
 
 
-  Future<List<Ocenky>?>? getAllOCenky() async {
+  Future<List<Prikaz>?>? getAllPrikazes() async {
     final storage = FlutterSecureStorage();
     String? accessToken = await storage.read(key: 'access_token');
     String? refreshToken = await storage.read(key: 'refresh_token');
-    List<Ocenky> ocenky;
+    List<Prikaz> prikazes;
 
-    var url_base = Uri.parse('https://api.sfu-kras.ru/api/v1/student/elearning/courses?page%5Bsize%5D=1&page%5Bnumber%5D=1');
+    var url_base = Uri.parse('https://api.sfu-kras.ru/api/v1/student/orders?page%5Bsize%5D=1&page%5Bnumber%5D=1');
     var headers = {'Authorization': 'Bearer $accessToken'};
 
 
@@ -122,24 +125,24 @@ class _ocenkyViewPage extends State<ocenkyView> {
       if (response.statusCode == 200) {
         var jsonResponce = jsonDecode(response.body);
         var data = jsonResponce['meta'];
-        var page = data['page'];
-        var total = page['total'];
+        var total = data['total'];
 
-        var url_redirect = Uri.parse('https://api.sfu-kras.ru/api/v1/student/elearning/courses?page%5Bsize%5D=$total&page%5Bnumber%5D=1');
+        var url_redirect = Uri.parse('https://api.sfu-kras.ru/api/v1/student/orders?page%5Bsize%5D=$total&page%5Bnumber%5D=1');
         response = await http.get(url_redirect, headers: headers);
         if (response.statusCode == 200) {
           jsonResponce = jsonDecode(response.body);
           var prikazesData = jsonResponce['data'];
 
-          ocenky = prikazesData.map<Ocenky>((json) {
+          prikazes = prikazesData.map<Prikaz>((json) {
             var attributes = json['attributes'];
-            return Ocenky(
-              id: json['id'],
-              title: attributes['name'],
+            return Prikaz(
+              nomer: attributes['number'],
+              title: attributes['title'],
+              date: attributes['date'],
             );
           }).toList();
 
-          return ocenky;
+          return prikazes;
         }
       }
     }

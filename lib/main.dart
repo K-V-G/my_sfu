@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:my_sfu/privatInfoView.dart';
-import 'package:my_sfu/windowView.dart';
+import 'package:my_sfu/views/privatInfoView.dart';
 
-import 'initialView.dart';
+
+import 'views/initialView.dart';
 
 
 void main() {
@@ -17,15 +17,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
 
-      home: initialView(),
       routes: <String, WidgetBuilder> {
-        '/privateInfo': (BuildContext context) => profieViewSudents()
+        '/privateInfo': (BuildContext context) => profieViewSudents(),
+        '/': (BuildContext context) => initialView()
+
       },
     );
   }

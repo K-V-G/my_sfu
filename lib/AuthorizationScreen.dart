@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:my_sfu/windowView.dart';
+import 'package:my_sfu/views/windowView.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -15,7 +15,9 @@ class AuthorizationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: WebView(
+      body: MaterialApp (
+        debugShowCheckedModeBanner: false,
+        home: WebView(
         initialUrl: authorizationUrl,
         javascriptMode: JavascriptMode.unrestricted,
         onWebViewCreated: (WebViewController webViewController) {
@@ -43,7 +45,7 @@ class AuthorizationScreen extends StatelessWidget {
           return NavigationDecision.navigate;
         },
       ),
-    );
+    ));
   }
 
   Future<String> getTokens(String authorizationCode, String codeVerifier) async {

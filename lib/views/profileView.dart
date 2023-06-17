@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
-import 'models/Group.dart';
+import '../models/Group.dart';
 
 class profieView extends StatefulWidget {
   @override
@@ -168,26 +168,54 @@ class _profileViewStatePage extends State<profieView> {
                         child: Row(
                           children: [
                             Expanded(flex: 10, child: Text("")),
-                            Expanded(flex: 80, child: Padding(padding: EdgeInsets.only(bottom: 10.0),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  // Обработчик нажатия кнопки
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  primary: const Color(0xff6D2D34),
-                                  minimumSize: Size(double.infinity, 48.0),
-                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                ),
-                                child: const Text(
-                                  'Выйти из аккаунта',
-                                  style: TextStyle(
-                                    color: Color(0xffFF3347),
-                                    fontSize: 22.0,
-                                    fontWeight: FontWeight.normal,
-                                    fontFamily: "Roboto",
+                            Expanded(
+                              flex: 80,
+                              child: Padding(
+                                padding: EdgeInsets.only(bottom: 10.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  child: Theme(
+                                    data: Theme.of(context).copyWith(
+                                      outlinedButtonTheme: OutlinedButtonThemeData(
+                                        style: ButtonStyle(
+                                          side: MaterialStateProperty.resolveWith<BorderSide>(
+                                                (states) {
+                                              return BorderSide(
+                                                color: Colors.black, // Измените цвет обводки здесь
+                                                width: 1.0,
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    child: OutlinedButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+                                      },
+                                      style: OutlinedButton.styleFrom(
+                                        backgroundColor: const Color(0xffFFFFFF),
+                                        minimumSize: Size(double.infinity, 48.0),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        'Выйти из аккаунта',
+                                        style: TextStyle(
+                                          color: Color(0xffEF5126),
+                                          fontSize: 22.0,
+                                          fontWeight: FontWeight.normal,
+                                          fontFamily: "Roboto",
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),)),
+                              ),
+                            ),
                             Expanded(flex: 10, child: Text(""))
                           ],
                         )

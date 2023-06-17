@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../courceInfo.dart';
+import '../views/courceInfo.dart';
 
 class CellsOcenky extends StatefulWidget {
   final String title;

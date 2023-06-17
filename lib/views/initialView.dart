@@ -1,13 +1,12 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:crypto/crypto.dart';
-import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
 
 import 'package:flutter/material.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 
-import 'AuthorizationScreen.dart';
+import '../AuthorizationScreen.dart';
 
 class initialView extends StatefulWidget {
   @override

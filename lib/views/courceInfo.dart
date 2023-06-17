@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:my_sfu/models/OcenkyInfo.dart';
 
-import 'cells/ocenkyInfoCource.dart';
+import '../cells/ocenkyInfoCource.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -29,7 +29,9 @@ class _courceOcenkyInfoState extends State<courceOcenkyInfo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: FutureBuilder<void>(
+        body:
+
+        FutureBuilder<void>(
         future: dataFuture,
         builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -50,31 +52,51 @@ class _courceOcenkyInfoState extends State<courceOcenkyInfo> {
             children: [
               Expanded(flex: 1, child: Text("")),
               Expanded(
-                  child: Row(
-                    children: [
-                      Expanded(flex: 20, child: Padding(
-                          padding: EdgeInsets.only(top: 8.0, left: 10.0) ,
-                          child: InkWell(onTap: () {
-                            Navigator.pop(context);
-                          },
-                              child: Align(alignment: Alignment.topCenter,
-                                  child: SvgPicture.asset("assets/image/strelka_nazad.svg"))))),
-                      Expanded(flex: 80, child:  Align(
-                        alignment: Alignment.topCenter,
-                        child: Text(
-                          widget.title,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20.0,
-                            fontFamily: 'Ubuntu',
-                            fontWeight: FontWeight.w600,
+                child: Align(
+                  alignment: Alignment.center,
+                  child: IntrinsicHeight(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 20,
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 8.0, left: 10.0),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Align(
+                                alignment: Alignment.topCenter,
+                                child: SvgPicture.asset("assets/image/strelka_nazad.svg"),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                      ),
-                      const Expanded(flex: 10, child: Text(""))
-                    ],
-                  )
+                        Expanded(
+                          flex: 80,
+                          child: SingleChildScrollView(
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: Text(
+                                widget.title,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 17.0,
+                                  fontFamily: 'Ubuntu',
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 10,
+                          child: Text(""),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
               Expanded(
                 flex: 7,

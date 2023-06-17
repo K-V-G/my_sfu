@@ -30,7 +30,7 @@ class _profileViewStatePage extends State<profieViewSudents> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<void>(
+      body:  FutureBuilder<void>(
         future: dataFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {

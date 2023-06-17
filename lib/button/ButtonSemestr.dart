@@ -30,7 +30,7 @@ class _ButtonSemestrState extends State<ButtonSemestr> {
               widget.buttonText,
               style: TextStyle(
                 color: widget.isOrange ? Color(0xffEF5126) : Color(0xffD9D9D9),
-                fontSize: 16.0,
+                fontSize: 14.0,
                 fontFamily: 'Ubuntu',
                 fontWeight: FontWeight.normal,
               ),

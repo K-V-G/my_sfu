@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_sfu/models/StudentsPlan.dart';
 
-import 'button/ButtonCource.dart';
-import 'button/ButtonSemestr.dart';
-import 'cells/CellsStudentPlan.dart';
+import '../button/ButtonCource.dart';
+import '../button/ButtonSemestr.dart';
+import '../cells/CellsStudentPlan.dart';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -51,9 +51,9 @@ class _studentsPlanView extends State<studentsPlanView> {
                 ),
                 Column(
                   children: [
-                    Expanded(flex: 1, child: Text("")),
+                    Expanded(flex: 10, child: Text("")),
                     const Expanded(
-                      flex: 1,
+                      flex: 10,
                       child: Padding(
                         padding: EdgeInsets.only(top: 0.0),
                         child: Align(
@@ -70,7 +70,7 @@ class _studentsPlanView extends State<studentsPlanView> {
                         ),
                       ),
                     ),
-                    Expanded(flex: 1, child: Padding(padding: EdgeInsets.only(left: 10.0, right: 10.0), child:
+                    Expanded(flex: 10, child: Padding(padding: EdgeInsets.only(left: 10.0, right: 10.0), child:
                     ListView(
                       scrollDirection: Axis.horizontal,
                       children: [
@@ -145,68 +145,56 @@ class _studentsPlanView extends State<studentsPlanView> {
                     ),
                     )
                     ),
-                    Expanded(flex: 1, child: Row(
-                      children: [
-                        Expanded(flex: 5, child: Text("")),
-                        Expanded(flex: 90, child: Row(
-                          children: [
-                            Expanded(flex: 45, child: ButtonSemestr(
-                              buttonText: '1 семестр',
-                              onPressed: () {
-                                setState(() {
-                                  selectedButtonSemestr = 0;
-                                  if (cource == 1) {
-                                    semestr = 1;
-                                  }
-                                  else if (cource == 2) {
-                                    semestr = 3;
-                                  }
-                                  else if (cource == 3) {
-                                    semestr = 5;
-                                  }
-                                  else if (cource == 4) {
-                                    semestr = 7;
-                                  }
-                                  else if (cource == 5) {
-                                    semestr = 9;
-                                  }
-                                });
-                              },
-                              isOrange: selectedButtonSemestr == 0,
-                            ),),
-                            Expanded(flex: 5, child: Text("")),
-                            Expanded(flex: 45, child: ButtonSemestr(
-                              buttonText: '2 семестр',
-                              onPressed: () {
-                                setState(() {
-                                  selectedButtonSemestr = 1;
-                                  if (cource == 1) {
-                                    semestr = 2;
-                                  }
-                                  else if (cource == 2) {
-                                    semestr = 4;
-                                  }
-                                  else if (cource == 3) {
-                                    semestr = 6;
-                                  }
-                                  else if (cource == 4) {
-                                    semestr = 8;
-                                  }
-                                  else if (cource == 5) {
-                                    semestr = 10;
-                                  }
-                                });
-                              },
-                              isOrange: selectedButtonSemestr == 1,
-                            )),
-                          ],
-                        ),),
-                        Expanded(flex: 5, child: Text("")),
-                      ],
-                    )),
+                    Expanded(
+                      flex: 10,
+                      child: Row(
+                        children: [
+                          Expanded(flex: 5, child: Text("")),
+                          Expanded(
+                            flex: 90,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 45,
+                                  child: SizedBox(
+                                    height: 50,
+                                    child: ButtonSemestr(
+                                      buttonText: '1 семестр',
+                                      onPressed: () {
+                                        setState(() {
+                                          selectedButtonSemestr = 0;
+                                        });
+                                      },
+                                      isOrange: selectedButtonSemestr == 0,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(flex: 5, child: Text("")),
+                                Expanded(
+                                  flex: 45,
+                                  child: SizedBox(
+                                    height: 50,
+                                    child: ButtonSemestr(
+                                      buttonText: '2 семестр',
+                                      onPressed: () {
+                                        setState(() {
+                                          selectedButtonSemestr = 1;
+                                        });
+                                      },
+                                      isOrange: selectedButtonSemestr == 1,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(flex: 5, child: Text("")),
+                        ],
+                      ),
+                    ),
 
                     Expanded(
-                      flex: 5,
+                      flex: 60,
                       child: FutureBuilder<List<StudentsPlan>?>(
                         future: dataFuture,
                         builder: (context, snapshot) {
@@ -224,7 +212,7 @@ class _studentsPlanView extends State<studentsPlanView> {
                               itemCount: studentPlani?.length ?? 0,
                               itemBuilder: (context, index) {
                                 StudentsPlan studentsPlan = studentPlani![index];
-                                if (studentsPlan.yearOfStudy == cource && studentsPlan.semestr == semestr) {
+                                if (studentsPlan.yearOfStudy == cource && studentsPlan.semestr == getSemestr(cource, selectedButtonSemestr)) {
                                   return CellsSudentPlan(
                                     type: studentsPlan.obyzatOrNeObyzat == true ? 'По выбору' : 'Обязательная',
                                     title: studentsPlan.title,
@@ -236,7 +224,7 @@ class _studentsPlanView extends State<studentsPlanView> {
 
                                   );
                                 } else {
-                                  return Container(); // Return an empty container for objects that don't meet the filter criteria
+                                  return Container();
                                 }
                               },
                             );
@@ -343,4 +331,49 @@ class _studentsPlanView extends State<studentsPlanView> {
     }
     return null;
   }
+
+  int getSemestr(int course, int id) {
+    if (cource == 1) {
+      if (id == 0) {
+        return 1;
+      }
+      else {
+        return 2;
+      }
+    }
+    if (cource == 2) {
+      if (id == 0) {
+        return 3;
+      }
+      else {
+        return 4;
+      }
+    }
+    if (cource == 3) {
+      if (id == 0) {
+        return 5;
+      }
+      else {
+        return 6;
+      }
+    }
+    if (cource == 4) {
+      if (id == 0) {
+        return 7;
+      }
+      else {
+        return 8;
+      }
+    }
+    if (cource == 5) {
+      if (id == 0) {
+        return 9;
+      }
+      else {
+        return 10;
+      }
+    }
+    return 100;
+  }
+
 }

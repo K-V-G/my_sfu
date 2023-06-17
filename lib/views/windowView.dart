@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:my_sfu/prikazyView.dart';
-import 'package:my_sfu/profileView.dart';
-import 'package:my_sfu/studentsPlanView.dart';
-import 'package:my_sfu/zachetkaView.dart';
+import 'package:my_sfu/views/prikazyView.dart';
+import 'package:my_sfu/views/profileView.dart';
+import 'package:my_sfu/views/studentsPlanView.dart';
+import 'package:my_sfu/views/zachetkaView.dart';
 
 import 'ocenkyView.dart';
 

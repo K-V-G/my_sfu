@@ -5,12 +5,12 @@ import 'package:sqflite/sqflite.dart';
 import '../models/Zachetka.dart';
 
 
-class DatabaseHelper {
-  static final DatabaseHelper instance = DatabaseHelper._();
+class DatabaseHelperZachetka {
+  static final DatabaseHelperZachetka instance = DatabaseHelperZachetka._();
 
   static Database? _database;
 
-  DatabaseHelper._();
+  DatabaseHelperZachetka._();
 
   Future<Database> get database async {
     if (_database != null) {
@@ -22,7 +22,7 @@ class DatabaseHelper {
   }
 
   Future<Database> initDatabase() async {
-    final path = join(await getDatabasesPath(), 'cacheLastOff.db');
+    final path = join(await getDatabasesPath(), 'cacheZachetka.db');
     return await openDatabase(
       path,
       version: 1,

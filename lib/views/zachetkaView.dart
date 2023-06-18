@@ -284,7 +284,7 @@ class _zachetkaViewPage extends State<zachetkaView> {
     var idStudent = await getId();
     var idStudentOnAPI;
     var count_c;
-    final dbHelper = DatabaseHelper.instance;
+    final dbHelper = DatabaseHelperZachetka.instance;
 
     var url_student = Uri.parse('https://api.sfu-kras.ru/api/v1/student');
     var url_base = Uri.parse('https://api.sfu-kras.ru/api/v1/student/grades?page%5Bsize%5D=1&page%5Bnumber%5D=1');

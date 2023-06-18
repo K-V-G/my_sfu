@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:my_sfu/models/StudentsPlan.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../button/ButtonCource.dart';
 import '../button/ButtonSemestr.dart';
+import '../cache/DB_Helper_Students_Plan.dart';
 import '../cells/CellsStudentPlan.dart';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -253,7 +255,28 @@ class _studentsPlanView extends State<studentsPlanView> {
     List<StudentsPlan> studentsPlan;
     var url_student = Uri.parse('https://api.sfu-kras.ru/api/v1/student');
     var headers = {'Authorization': 'Bearer $accessToken'};
+    var idStudent = await getId();
+    var idStudentOnAPI;
     var count_c;
+    final dbHelper = DatabaseHelperStudentsPlan.instance;
+
+    List<StudentsPlan>? cachedData = await dbHelper.getStudentsPlan();
+
+    if (cachedData != null && cachedData.isNotEmpty) {
+      final currentDate = DateTime.now();
+      final cachedItem = cachedData.first;
+      final liniyaGizni = DateTime.fromMillisecondsSinceEpoch(cachedItem.liniyaGizni!);
+      final countCource = cachedItem.count_c;
+      final idStudentFromDB = cachedItem.id_student;
+
+      if (currentDate.isBefore(liniyaGizni) && idStudentFromDB == idStudent) {
+        print("Это все ещё я");
+        setState(() {
+          count_cource = countCource;
+        });
+        return cachedData;
+      }
+    }
 
 
     if (accessToken != null) {
@@ -265,6 +288,7 @@ class _studentsPlanView extends State<studentsPlanView> {
         var id = attributes['curriculumId'];
         var god_obychenia = attributes['termPeriodYears'];
         count_c = god_obychenia;
+        idStudentOnAPI = id;
 
         var url_base = Uri.parse(
             'https://api.sfu-kras.ru/api/v1/curriculums/$id/disciplines?page%5Bsize%5D=1&page%5Bnumber%5D=1');
@@ -286,7 +310,7 @@ class _studentsPlanView extends State<studentsPlanView> {
             studentsPlan = studentsPlanDate.map<StudentsPlan>((json) {
               var attributes = json['attributes'];
               return StudentsPlan(
-                id: json['id'],
+                idStudentsPlan: json['id'],
                 title: attributes['title'],
                 department: attributes['department'],
                 totalSelfWorkHours: attributes['totalSelfWorkHours'],
@@ -297,6 +321,9 @@ class _studentsPlanView extends State<studentsPlanView> {
                 hasPass: attributes['hasPass'],
                 yearOfStudy:  attributes['yearOfStudy'],
                 semestr:  attributes['semester'],
+                count_c: count_c,
+                id_student: idStudentOnAPI,
+                liniyaGizni: DateTime.now().add(Duration(days: 7)).millisecondsSinceEpoch,
               );
             }).toList();
 
@@ -305,6 +332,12 @@ class _studentsPlanView extends State<studentsPlanView> {
             });
 
             List<StudentsPlan> studentPlanConverterList = studentsPlan.toSet().toList();
+
+            await dbHelper.deleteAllRows();
+
+            studentPlanConverterList.forEach((st) {
+              dbHelper.saveStudentsPlan(st);
+            });
 
             return studentPlanConverterList;
           }
@@ -374,6 +407,11 @@ class _studentsPlanView extends State<studentsPlanView> {
       }
     }
     return 100;
+  }
+
+  Future<int?> getId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('id_student');
   }
 
 }

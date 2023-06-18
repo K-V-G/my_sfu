@@ -6,6 +6,7 @@ class Zachetka {
   final String finalGrade;
   final int? liniyaGizni;
   final int count_c;
+  final int id_student;
 
   Zachetka({
     required this.yearOfStudy,
@@ -14,6 +15,7 @@ class Zachetka {
     required this.controlType,
     required this.finalGrade,
     required this.count_c,
+    required this.id_student,
     this.liniyaGizni,
   });
 
@@ -25,6 +27,7 @@ class Zachetka {
       'controlType': controlType,
       'finalGrade': finalGrade,
       'liniyaGizni': liniyaGizni,
+      'idStudent': id_student,
       'countCource': count_c
     };
   }
@@ -38,6 +41,7 @@ class Zachetka {
       finalGrade: map['finalGrade'],
       liniyaGizni: map['liniyaGizni'],
       count_c: map['countCource'],
+      id_student: map['idStudent'],
     );
   }
 }

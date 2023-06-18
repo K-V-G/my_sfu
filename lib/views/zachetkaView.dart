@@ -4,6 +4,7 @@ import 'package:my_sfu/cells/CellsZachetka.dart';
 import 'package:my_sfu/models/Zachetka.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import '../button/ButtonCource.dart';
@@ -280,6 +281,8 @@ class _zachetkaViewPage extends State<zachetkaView> {
     String? refreshToken = await storage.read(key: 'refresh_token');
     List<Zachetka>? prikazes;
     Map<String, List<dynamic>>? maps = {};
+    var idStudent = await getId();
+    var idStudentOnAPI;
     var count_c;
     final dbHelper = DatabaseHelper.instance;
 
@@ -294,8 +297,12 @@ class _zachetkaViewPage extends State<zachetkaView> {
       final cachedItem = cachedData.first;
       final liniyaGizni = DateTime.fromMillisecondsSinceEpoch(cachedItem.liniyaGizni!);
       final countCource = cachedItem.count_c;
-
-      if (currentDate.isBefore(liniyaGizni)) {
+      final idStudentFromDB = cachedItem.id_student;
+      print("ИИИИИ");
+      print("idFrom DB : $idStudentFromDB");
+      print("idFrom SharedPref : $idStudent");
+      if (currentDate.isBefore(liniyaGizni) && idStudentFromDB == idStudent) {
+        print("Это все ещё я");
         setState(() {
           count_cource = countCource;
         });
@@ -304,6 +311,7 @@ class _zachetkaViewPage extends State<zachetkaView> {
     }
 
     if (accessToken != null) {
+      print("Я вызвался");
       var response = await http.get(url_base, headers: headers);
       if (response.statusCode == 200) {
         var jsonResponce = jsonDecode(response.body);
@@ -318,7 +326,9 @@ class _zachetkaViewPage extends State<zachetkaView> {
           var data = jsonResponce['data'];
           var attributes = data['attributes'];
           var god_obychenia = attributes['termPeriodYears'];
+          var id = attributes['curriculumId'];
           count_c = god_obychenia;
+          idStudentOnAPI = id;
         }
 
         response = await http.get(url_redirect, headers: headers);
@@ -335,9 +345,12 @@ class _zachetkaViewPage extends State<zachetkaView> {
               controlType: attributes['controlType'],
               finalGrade: attributes['finalGrade'],
               count_c: count_c,
+              id_student: idStudentOnAPI,
               liniyaGizni: DateTime.now().add(Duration(days: 30)).millisecondsSinceEpoch,
             );
           }).toList();
+
+          await dbHelper.deleteAllRows();
 
           prikazes?.forEach((zachetka) {
             dbHelper.saveZachetka(zachetka);
@@ -351,6 +364,11 @@ class _zachetkaViewPage extends State<zachetkaView> {
     });
 
     return prikazes;
+  }
+
+  Future<int?> getId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('id_student');
   }
 
 

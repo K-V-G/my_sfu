@@ -5,6 +5,7 @@ import 'package:my_sfu/views/windowView.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthorizationScreen extends StatelessWidget {
   final String authorizationUrl;
@@ -83,19 +84,23 @@ class AuthorizationScreen extends StatelessWidget {
   }
 
   Future<void> getUserInfo(String accessToken) async {
-    var url = Uri.parse('https://api.sfu-kras.ru/api/v1/user');
+    print("GET USER INFO");
+    var url_student = Uri.parse('https://api.sfu-kras.ru/api/v1/student');
     var headers = {'Authorization': 'Bearer $accessToken'};
+    var id_student;
 
-    var response = await http.get(url, headers: headers);
+    var  response = await http.get(url_student, headers: headers);
     if (response.statusCode == 200) {
       var jsonResponce = jsonDecode(response.body);
       var data = jsonResponce['data'];
       var attributes = data['attributes'];
-      var firstName = attributes['firstName'];
-      var lastName = attributes['lastName'];
-      var middleName = attributes['middleName'];
+      var id = attributes['curriculumId'];
+      id_student = id;
 
-      print('firstName: $firstName and lastName: $lastName and middleName: $middleName');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setInt('id_student', id_student);
+      int? idF = await prefs.getInt('id_student');
+      print("ID FROM SH: $idF");
     }
   }
 }

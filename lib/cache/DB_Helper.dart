@@ -22,7 +22,7 @@ class DatabaseHelper {
   }
 
   Future<Database> initDatabase() async {
-    final path = join(await getDatabasesPath(), 'cache1.db');
+    final path = join(await getDatabasesPath(), 'cacheLastOff.db');
     return await openDatabase(
       path,
       version: 1,
@@ -40,7 +40,8 @@ class DatabaseHelper {
         controlType TEXT,
         finalGrade TEXT,
         liniyaGizni INTEGER,
-        countCource INTEGER
+        countCource INTEGER,
+        idStudent INTEGER
       )
     ''');
   }
@@ -57,5 +58,10 @@ class DatabaseHelper {
     return List.generate(maps.length, (index) {
       return Zachetka.fromMap(maps[index]);
     });
+  }
+
+  Future<void> deleteAllRows() async {
+    final db = await instance.database;
+    await db.delete('zachetka');
   }
 }
